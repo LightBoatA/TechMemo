@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #btn {
+            height: 50px;
+            width: 200px;
+            background-color: lightcoral;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="btn">付款</button>
+    <script>
+        // 原理理解：
+        // 防抖的目的：多次点击、只有最后一次起作用（在某一时间段内重复点击无效）
+        //类比：晚上睡不着听音乐，设置定时关闭音乐，它会在你最后设置的时间关闭
+        // 所以：每次：先清掉原来的定时，重新定时
+
+        const btn = document.getElementById('btn');
+        // 绑定点击事件
+        // btn.addEventListener('click', pay, false);
+        btn.addEventListener('click', debounce(pay, 3000), false);
+
+        // 付款
+        function pay(e) {
+            // this指向应该是button
+            // console.log(this);
+            // e应该是button点击事件: e参数是传过来的arguments中的第一个元素
+            // console.log(e);
+            // 事件逻辑：
+            console.log('我已成功转账20000元', new Date().getSeconds());
+        }
+
+        // 防抖保护层：基础版，有第一次触发延迟问题
+        // function debounce(fn, delay) {
+        //     // 闭包变量：保持变量存在、不被回收
+        //     let timer = null;
+        //     // 返回函数是因为：绑定时需要填入函数对象，而不是调用函数
+        //     return function() {
+        //         // 每次都先清掉定时器
+        //         if (timer) { clearTimeout(timer)}
+        //         // 重新定时
+        //         timer = setTimeout(() => {
+        //             // 此this/arguments是btn事件调用对应传入的，本来是直接传给处理函数的
+        //             // this指向button
+        //             // arguments的第一个参数是e
+        //             // 通过箭头函数、指向不变、参数不变的特点，传给处理函数
+        //             fn.apply(this, arguments)
+        //         }, delay);
+        //     }
+        // }
+
+        // 进阶版：处理第一次触发延迟问题
+        // 原理：
+        // 1、只要timer是null，就证明其是第一次，clearTimer后的timer是数值类型，不是Null
+
+        function debounce(fn, delay) {
+            let timer = null;
+            return function() {
+                if (timer) { 
+                    clearTimeout(timer)
+                } 
+
+                // 只有首次点击才执行
+                if (timer === null) {
+                    fn.apply(this, arguments)
+                }
+
+                // 首次点击之后，过一段时间再点才能好使（）
+                timer = setTimeout(() => {
+                    timer = null; // 变成首次
+                }, delay);
+            }
+        }
+    </script>
+</body>
+</html>

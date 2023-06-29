@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            /* background-color: blueviolet; */
+            width: 600px;
+            height: 600px;
+            display: grid;
+            place-items: center;
+            /* position: relative; */
+            /* text-align: center;
+            line-height: 600px; */
+        }
+        .box {
+            /* display: inline; */
+            /* position:absolute; */
+            /* top: 50%;
+            left: 50%; */
+            /* transform: translate(-50%, -50%); */
+            background-color: red;
+            /* width: 300px;
+            height: 100px; */
+            /* vertical-align: middle; */
+            /* background: url(./2023-06-17-14-24-25.png) no-repeat center center;;
+            background-size: contain; */
+        }
+        img {
+            width: 300px;
+            display:block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- <div class="box">
+            <img src="./2023-06-17-14-24-25.png" alt="" class="box">
+        </div> -->
+        <!-- <div class="draw"></div> -->
+        <!-- <span class="box">我试试</span> -->
+
+        
+    </div>
+    <script>
+        function translate(str) {
+        // 判断单词是否以元音开始
+        // 如果不是，匹配到第一个不是aeiou的，然后替换掉
+        if (/[aeiou]/.test(str[0])) {
+            return str += 'way';
+        } else {
+            const consonant = str.match(/^[^aeiou]+/)[0];
+            return str.slice(consonant.length) + 'ay';
+        }
+    }
+    function unite(...arr) {
+        console.log(arr.flat());
+        return Array.from(new Set([...arr.flat()]));
+    }
+
+    let originalArray = [1, 2, 3];
+    let shallowCopyArray = originalArray;
+    let a = Array.from(originalArray);
+
+    originalArray.push('滚蛋');
+    // console.log(shallowCopyArray);
+    // console.log(a);
+
+    // console.log(a === originalArray);
+
+
+    </script>
+</body>
+</html>

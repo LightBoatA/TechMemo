@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #btn {
+            height: 50px;
+            width: 200px;
+            background-color: lightcoral;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <button id="btn">请多次点击</button>
+    <script>
+        // 原理：在一段时间间隔内，多次点击，只起一次作用
+        const btn = document.getElementById('btn');
+        // 绑定点击事件
+        // btn.addEventListener('click', pay, false);
+        btn.addEventListener('click', throttle(pay, 3000), false);
+
+        // 付款
+        function pay(e) {
+            // this指向应该是button
+            console.log(this);
+            // e应该是button点击事件: e参数是传过来的arguments中的第一个元素
+            console.log(e);
+            // 事件逻辑：
+            console.log('点击起作用了！', new Date().getSeconds());
+        }
+
+        function throttle(fn, delay) {
+            // 使用闭包，保存一个不被回收的变量，这样就可以通过它连续控制时间间隔
+            let beginTime = 0;
+            return function() {
+                const curTime = new Date().getTime();
+                if (curTime - beginTime > delay) {
+                    fn.apply(this,arguments);
+                    beginTime = curTime;
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .chat-container {
+  width: 100%;
+  height: 400px;
+  overflow-y: auto; /* 设置垂直滚动条 */
+  padding: 10px;
+}
+
+.chat-bubble {
+  display: inline-block;
+  max-width: 70%; /* 设置气泡的最大宽度 */
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #eaeaea;
+}
+
+.chat-bubble:nth-child(odd) {
+  background-color: #d1edff;
+  /* 设置左侧气泡的样式 */
+}
+
+.chat-bubble:nth-child(even) {
+  background-color: #c6f7ce;
+  /* 设置右侧气泡的样式 */
+}
+    </style>
+</head>
+<body>
+<div class="chat-container">
+  <div class="chat-bubble">Hello!</div>
+  <div class="chat-bubble">Hi there!</div>
+  <!-- 其他聊天气泡 -->
+</div>
+    <script>
+        const chatContainer = document.querySelector('.chat-container');
+
+function addChatBubble(text, isCurrentUser) {
+  const chatBubble = document.createElement('div');
+  chatBubble.className = 'chat-bubble';
+  chatBubble.textContent = text;
+
+  if (isCurrentUser) {
+    chatBubble.style.float = 'right';
+  }
+
+  chatContainer.appendChild(chatBubble);
+}
+
+// 示例用法
+addChatBubble('Hello!', false); // 左侧气泡
+addChatBubble('Hi there!', true); // 右侧气泡
+    </script>
+</body>
+
+</html>
