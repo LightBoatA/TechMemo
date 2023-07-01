@@ -85,31 +85,46 @@
     // const a = str.charCodeAt(1);
     // const b = a.toString(2);
     // console.log(b);
-    function convert(str) {
-        const obj = {
-            ' ': '&nbsp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '&': '&amp;',
-            '"': '&quot;',
-            "'": '&apos;',
+    // function convert(str) {
+    //     const obj = {
+    //         ' ': '&nbsp;',
+    //         '<': '&lt;',
+    //         '>': '&gt;',
+    //         '&': '&amp;',
+    //         '"': '&quot;',
+    //         "'": '&apos;',
+    //     }
+        
+    // const arr = str.split(' ');
+    // // const resArr = arr.map(word => obj[word]? obj[word] : word);
+    // const resArr = arr.map(word => {
+    //     const a = obj[word];
+    //     console.log(word);
+    //     if (a) {
+    //         return obj[word];
+    //     } else {
+    //         return word;
+    //     }
+    // });
+    
+    // return resArr.join(' ');
+    // }
+    
+    // // const a = convert("Stuff in 'quotation marks'");
+    // const a = convert("<>");
+    // console.log(a);
+
+    function sym(...args) {
+        const resSet = new Set();
+        for (let i = 0; i < args.length; i++) {
+            for(num of args[i]) {
+                resSet.has(num) ? resSet.delete(num) : resSet.add(num);
+            }
         }
         
-    const arr = str.split(' ');
-    // const resArr = arr.map(word => obj[word]? obj[word] : word);
-    const resArr = arr.map(word => {
-        const a = obj[word];
-        console.log(word);
-        if (a) {
-            return obj[word];
-        } else {
-            return word;
-        }
-    });
-    
-    return resArr.join(' ');
+    return Array.from(resSet);
     }
     
-    // const a = convert("Stuff in 'quotation marks'");
-    const a = convert("<>");
+    const a = sym([1, 1, 2, 5], [2, 2, 3, 5], [3, 4, 5, 5]);
+
     console.log(a);

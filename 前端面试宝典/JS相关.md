@@ -599,6 +599,120 @@ JavaScript 是**单线程**的，包含了**同步任务**与**异步任务**，
     }
 
 ```
+### es5和es6创建类和对象的模板
+
+**ES5/实例方法**
+
+```javascript
+function ClassName(param1, param2) {
+  // 实例属性
+  this.param1 = param1;
+  this.param2 = param2;
+
+  // 实例方法
+  this.method1 = function() {
+    // 方法的实现
+  };
+
+  this.method2 = function() {
+    // 方法的实现
+  };
+}
+
+// 静态方法
+ClassName.staticMethod = function() {
+  // 静态方法的实现
+};
+
+// 创建类的实例
+var instance = new ClassName(arg1, arg2);
+```
+
+解释说明：
+
+1. 创建一个名为`ClassName`的构造函数，并接受`param1`和`param2`作为参数。
+2. 在构造函数内部，使用`this`关键字将参数赋值给实例的属性。
+3. 将方法定义为构造函数内部的函数，从而成为实例方法。
+4. 如果需要定义静态方法，直接将函数添加到构造函数本身，例如`staticMethod`。
+5. 使用`new`关键字和构造函数创建类的实例，传入相应的参数。
+6. 可以根据需要使用类的实例进行操作，调用实例的方法或访问实例的属性。
+ES5/原型方法
+下面是将ES6类转换为ES5构造函数的方式：
+
+```javascript
+function ClassName(param1, param2) {
+  // 初始化实例的属性
+  this.param1 = param1;
+  this.param2 = param2;
+}
+
+// 定义实例的方法
+ClassName.prototype.method1 = function() {
+  // 方法的实现
+};
+
+ClassName.prototype.method2 = function() {
+  // 方法的实现
+};
+
+// 静态方法
+ClassName.staticMethod = function() {
+  // 静态方法的实现
+};
+
+// 创建类的实例
+var instance = new ClassName(arg1, arg2);
+```
+
+解释说明：
+
+1. 创建一个名为`ClassName`的构造函数，并接受`param1`和`param2`作为参数。
+2. 在构造函数内部，使用`this`关键字将参数赋值给实例的属性。
+3. 使用原型链为构造函数添加实例方法，比如`method1`和`method2`。
+4. 如果需要定义静态方法，直接将函数添加到构造函数本身，例如`staticMethod`。
+5. 使用`new`关键字和构造函数创建类的实例，传入相应的参数。
+6. 可以根据需要使用类的实例进行操作，调用实例的方法或访问实例的属性。
+ES6类
+当使用ES6创建类时，可以使用`class`关键字来定义类，并使用`constructor`方法作为类的构造函数。下面是一个创建类的实例的模板：
+
+```javascript
+class ClassName {
+  constructor(param1, param2) {
+    // 初始化实例的属性
+    this.param1 = param1;
+    this.param2 = param2;
+  }
+
+  // 定义实例的方法
+  method1() {
+    // 方法的实现
+  }
+
+  method2() {
+    // 方法的实现
+  }
+
+  // 静态方法
+  static staticMethod() {
+    // 静态方法的实现
+  }
+}
+
+// 创建类的实例
+const instance = new ClassName(arg1, arg2);
+```
+
+解释说明：
+
+1. 使用`class`关键字定义一个类，类名为`ClassName`。
+2. 在类的构造函数`constructor`中，可以传入参数`param1`和`param2`，并使用`this`关键字将参数赋值给实例的属性。
+3. 在类中，可以定义各种实例方法，比如`method1`和`method2`。
+4. 如果需要定义静态方法，可以使用`static`关键字来定义静态方法，例如`staticMethod`。
+5. 使用`new`关键字和类的构造函数创建类的实例，传入相应的参数。
+6. 可以根据需要使用类的实例进行操作，调用实例的方法或访问实例的属性。
+
+
+
 ```javascript
 
 ```
