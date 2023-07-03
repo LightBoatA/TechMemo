@@ -564,10 +564,11 @@ Virtual DOM 有以下优点：
 3. 事件侦听缓存。
 
 **33. Vue3为什么使用Proxy？**
-1. Proxy可以代理整个对象，而defineProperty只能代理对象上的某个属性。
-2. Proxy对代理对象的监听更加丰富。
+1. Proxy可以代理整个对象，而defineProperty只能代理对象上的某个属性。Object.defineProperty 对新增属性需要手动进行 Observe
+2. Proxy对代理对象的监听更加丰富。Proxy支持 13 种拦截操作
 3. Proxy代理对象会生成新的对象，不会修改被代理对象本身。
-4. Proxy补充了对IE浏览器的兼容性。
+4. Proxy 对数组的方法也可以监测到，不需要像上面 vue2.x 源码中那样进行对数组7个方法进行单独设计
+   >  Vue2 设置了 7 个变异数组（push、pop、shift、unshift、splice、sort、reverse）的 hack 方法来解决问题
 
 **34. 说一下你对组件的理解。**
 组件是可重复使用的Vue实例，具有独一无二的组件名称。它可以抽离单独的公共模块，提高代码的复用率。
