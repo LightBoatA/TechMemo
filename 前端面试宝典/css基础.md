@@ -147,3 +147,8 @@ translate 偏移居中（绝对定位中最好用的方法，不定宽高）
         display:block;
     }
 ```
+### flex布局相关
+- 某一子元素单独靠右：`margin-left: auto`
+
+### 一个正常而普通的表格
+- ![Alt text](image-12.png)

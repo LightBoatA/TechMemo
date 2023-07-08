@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .block {
+            border: 2px solid gray;
+            display: inline-block;
+            padding: 20px;
+            margin: 0 5px;
+            color: gray;
+            
+        }
+        .highlight {
+            /* padding: 30px; */
+            border: 2px solid #F24C3D;
+            /* border-bottom: 3px; */
+            transition: transform 0.5s ease-in-out;
+            /* color: green; */
+        }
+        .completed {
+            border: 2px solid green;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const arr = [7,6,5,4,3,2,1];
+
+        function createBlock(val) {
+            const block = document.createElement('div');
+            block.textContent = val;
+            block.className = 'block'
+            return block;
+        }
+
+        
+        // 获取容器
+        const container = document.body;
+        // 生成方块
+        arr.forEach((val) => {
+            const block = createBlock(val);
+            container.appendChild(block);
+        })
+
+        // 冒泡排序，把同步循环改成异步循环
+        function bubbleSort(arr) {
+            let i = 0;
+            let j = 0;
+
+            function nextSwap() {
+                if (i < arr.length - 1) {
+                    if (j < arr.length - 1 - i) {
+                        if (arr[j] > arr[j + 1]) {
+                            // 视觉交换
+                            animateSwap(j, j + 1);
+                            // 数据交换
+                            let temp = arr[j + 1];
+                            arr[j + 1] = arr[j];
+                            arr[j] = temp;
+
+                            // 延迟进入下次循环，为了显示交换效果
+                            setTimeout(nextSwap, 2000); // 间隔1秒进行下一次交换
+
+                        } else {
+                            j++;
+                            nextSwap();
+                        }
+
+                    } else {
+                        // 完成一趟排序，给有序的部分添加样式
+                        sortCompleted(arr.length - 1 - i);
+                        i++;
+                        j = 0;
+                        nextSwap();
+                    }
+                } else {
+                    // 完成所有排序
+                    sortCompleted(arr.length - 1 - i);
+                }
+            }
+
+            nextSwap();
+            
+            return arr;
+        }
+        // 找到要交换的目标
+        function animateSwap(index1, index2) {
+            const block1 = container.children[index1 + 1];
+            const block2 = container.children[index2 + 1];
+            // 1、先高亮
+            block1.classList.add('highlight');
+            block2.classList.add('highlight');
+
+            
+
+            // 高亮半秒后，再动画
+            setTimeout(() => {
+                // 交换位置动画
+                block1.style.transform = `translateX(${block2.offsetLeft - block1.offsetLeft}px)`;
+                block2.style.transform = `translateX(${block1.offsetLeft - block2.offsetLeft}px)`;
+                    
+                // 动画完成后再交换数字内容，并重置样式
+                setTimeout(() => {
+                    // 交换内容
+                    const temp = block1.textContent;
+                    block1.textContent = block2.textContent;
+                    block2.textContent = temp;
+
+                    // 重置
+                    block1.style.transform = 'translateX(0)';
+                    block2.style.transform = 'translateX(0)';
+                    block1.classList.remove('highlight');
+                    block2.classList.remove('highlight');
+                }, 1000);
+
+            }, 500); // 等待0.5秒，与CSS过渡时间保持一致
+        }
+
+        // 给已排序部分添加样式
+        function sortCompleted(index) {
+            const block = container.children[index + 1];
+            block.classList.add('completed');
+        }
+        setTimeout(() => {
+            alert('开始排序了！')
+            bubbleSort(arr);
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -170,7 +170,7 @@ for (const [index, value] of iterator) {
 - 防止变量和参数被垃圾回收机制回收
 
 风险：
-- 滥用可能造成内存泄漏，不用的时候使完成函数引用指向null
+- 滥用可能造成内存泄漏，不用的时候使内部函数引用指向null
 
 示例：
 ```javascript
@@ -188,6 +188,36 @@ for (const [index, value] of iterator) {
     // 这里的局部变量a没有被回收，它持久存在
     f = null; // 为避免内存泄漏，用完后可以清空引用
 ```
+闭包中的this对象:
+- 一般情况下，闭包中的this指向window(严格模式下是undefined)
+```js
+  window.id = 'The window';
+  let obj = {
+    id: 'My Obj',
+    getIdFunc() {
+      return function() {
+        return this.id;
+      }
+    }
+  }
+  console.log(obj.getIdFunc()()); // 输出：The window
+```
+- 调整：把外层的**this用其他变量保存起来**。如果是想保留外层的arguments，也需要用其他变量保存起来。因为：**每个函数被调用时都会自动创建自己的this和arguments**，内部函数永远不可能直接访问外部函数的这两个变量。
+
+```js
+  window.id = 'The window';
+  let obj = {
+    id: 'My Obj',
+    getIdFunc() {
+      return function() {
+        let that = this; // 重点
+        return that.id;
+      }
+    }
+  }
+  console.log(obj.getIdFunc()()); // 输出：My Obj
+```
+
 ### 防抖和节流
 防抖（Debounce）和节流（Throttle）是两种常用的函数优化技术，用于**控制函数的触发频率**，以提高性能和用户体验。
 
@@ -518,6 +548,8 @@ Promise.race()
 
 JavaScript 是**单线程**的，包含了**同步任务**与**异步任务**，同步任务直接在**调用栈(主线程)**中执行，**异步任务**会放入**任务队列**(TaskQueue)中，等待同步任务全部执行完毕再取出来，所以如果异步之中仍有异步任务，在调用栈中执行时会继续放入任务队列中，这就是 JS 的事件循环机制(EventLoop)
 
+注意：事件的回调函数是异步任务，是在事件触发的时候才被添加到异步队列里的；定时器也是，时间到了才会放到队列里面
+
 #### 宏任务与微任务
 
 异步任务队列实际上分为两种，分别是宏任务队列与微任务队列，在当前循环中会**优先执行微任务**，当微任务队列被清空后才会执行宏任务队列。
@@ -711,8 +743,32 @@ const instance = new ClassName(arg1, arg2);
 5. 使用`new`关键字和类的构造函数创建类的实例，传入相应的参数。
 6. 可以根据需要使用类的实例进行操作，调用实例的方法或访问实例的属性。
 
+### 函数
+#### 箭头函数
+- 省略大括号：只能有一行代码，比如一个赋值操作，或一个表达式；会隐式返回这行代码的值
+- 箭头函数不能使用arguments/super/new.target,也没有prototype属性
 
+#### arguments
+- 还有个作用：arguments.callee()可以调用此函数，在递归中可用，解耦
 
+#### new.target
+- 检测是否是使用New关键字调用的。正常调用new.target值是undefined，new调用，其有值：指向这个构造函数
+#### 函数声明和函数表达式
+- 函数声明的方式：存在函数声明提升，所以可以提前调用，函数表达式不行
+
+#### 函数的属性和方法
+- 两个属性
+  - length:命名参数个数
+  - prototype
+- 三个方法:用call还是apply纯粹根据怎样传参方便
+  - call():传入参数列出来
+  - apply(): 传入数组或arguments对象
+  - bind()
+#### ES6函数尾调用优化
+- 尾调用：函数里嵌套函数，外层返回值也是内层函数的返回值
+- 优化：本来嵌套函数要入栈两个函数，优化后不需要了，入了，弹出（因为不用留着），再入，再弹出
+- 利用尾调用可以优化递归代码p309
+- 
 ```javascript
 
 ```
