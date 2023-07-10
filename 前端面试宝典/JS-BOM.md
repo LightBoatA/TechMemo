@@ -46,6 +46,7 @@ JavaScript BOM（浏览器对象模型）是一组用于与浏览器窗口进行
 - `window.screen.width` 和 `window.screen.height` 获取屏幕的宽度和高度。
 - `window.screen.availWidth` 和 `window.screen.availHeight` 获取可用的屏幕宽度和高度。
 
+
 ### 历史记录
 - `window.history.length` 获取历史记录中的页面数量。
 - `window.history.back()` 返回到上一个历史页面。

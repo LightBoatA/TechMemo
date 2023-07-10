@@ -310,7 +310,9 @@ function debounce(fn, delay) {
 
 ![Alt text](image-6.png)
 ### 节流
-与防抖不同的是，防抖的计时开始于被点击的时候。节流的计时是不受影响的固定的时间间隔
+- 与防抖不同的是，防抖的计时开始于被点击的时候。节流的计时是不受影响的固定的时间间隔
+- 它不需要定时器，但需要一个开始时间的标志
+- 执行之后，重置开始时间
 ```javascript
 function throttle(fn, delay) {
     // 使用闭包，保存一个不被回收的变量，这样就可以通过它连续控制时间间隔
@@ -493,17 +495,86 @@ person1.sayName();
 #### 组合继承（伪经典继承）
 **要点**：综合了原型链和盗用构造函数，将两者的优点结合了起来。上面两种写法都加进去。弥补了互相的不足，是js中使用最多的集成模式。而且也保留了instanceof操作符和isPrototypeOf()方法识别合成对象的能力。
 ```javascript
-// 待补充
+  // 父类构造函数
+  function SuperType(name) {
+      this.name = name;
+      this.colors = ['red', 'blue', 'green'];
+  }
+
+  // 父类原型上添加方法
+  SuperType.prototype.sayName = function() {
+      console.log(this.name);
+  }
+
+
+  // 子类构造函数
+  function SubType(name, age) {
+      // 调用父类构造函数，继承属性
+      SuperType.call(this, name);
+      this.age = age;
+  }
+
+  // 修改子类原型对象，继承方法
+  SubType.prototype = new SuperType();
+
+  // 子类自己的方法
+  SubType.prototype.sayAge = function() {
+      console.log(this.age);
+  }
+
+  let instance1 = new SubType('zss', 26);
+  instance1.colors.push('yellow');
+  console.log(instance1.colors); // [ 'red', 'blue', 'green', 'yellow' ]
+  instance1.sayName();
+  instance1.sayAge();
+
+  let instance2 = new SubType('whh', 26);
+  console.log(instance2.colors); // [ 'red', 'blue', 'green' ]
+  instance2.sayName();
+  instance2.sayAge();
 
 ```
 ### 类
+- 创建类和实现继承的典型例子：
+  ```js
+    class Person {
+      constructor(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+
+      sayHello() {
+        console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+      }
+    }
+
+    class Student extends Person {
+      constructor(name, age, grade) {
+        super(name, age); // 调用父类的构造函数
+        this.grade = grade;
+      }
+
+      study() {
+        console.log(`${this.name} is studying in grade ${this.grade}.`);
+      }
+    }
+    // 创建 Person 类的实例
+    const person = new Person('John', 30);
+    person.sayHello(); // 输出：Hello, my name is John and I am 30 years old.
+
+    // 创建 Student 类的实例
+    const student = new Student('John', 16, 10);
+    student.sayHello(); // 输出：Hello, my name is John and I am 16 years old.
+    student.study();   // 输出：John is studying in grade 10.
+
+  ```
 - 构造函数中的this，指向实例对象；类方法中的this指向调用者
 - 关于`super()`方法的作用
   - **初始化父类的实例**：super() 调用会创建父类的实例，并将该实例赋值给子类的 this，这样子类就可以继承父类的属性和方法。
   - **传递参数**：如果子类的构造函数需要接收参数，并且这些参数需要传递给父类的构造函数进行初始化，那么可以在 super() 中传递这些参数。
   - **执行父类的构造函数逻辑**：通过 super() 调用父类的构造函数，可以确保子类在构造实例时，父类的构造函数逻辑也会被执行。
 - 关于`super()`方法的注意之处：
-  - 如果子类的构造函数中使用了 super()，则在**调用 super() 之前不能使用 this** 关键字，因为在调用 super() 之前，子类的实例还未创建。
+  - 如果子类的构造函数中使用了 super()，则在**调用 super() 之前不能使用 this** 关键字，因为在调用 super() 之前，**子类的实例还未创建**。
   - 如果你没有在子类的构造函数中使用 super()，则会导致父类的构造函数未执行，可能导致子类无法正确地继承父类的属性和方法。所以推荐在子类构造函数中首先调用super()方法
 
 ### Promise
@@ -527,10 +598,12 @@ then()
 - 两个参数，onResolved处理程序和onRejected处理程序
 - 如果只想传入拒绝程序，前一项要填null
 - 返回一个新的期约实例：这个新实例基于onResolved处理程序的返回值构建。该返回值会通过Promise.resolve()包装来生成新期约。如果没有提供这个处理程序，它就会包装上一个期约解决后的值。
+  
 catch()
 - 给期约添加拒绝处理程序
 - 其实是个语法糖，其实就相当于Promise.prototype.then(null, onRejected);
 - 返回一个新的期约实例
+
 finally()
 - 返回一个新的期约实例
 - 表现为父期约的传递
@@ -543,12 +616,169 @@ Promise.all()
 Promise.race()
 - 无论是解决还是拒绝，只要是第一个落定的期约，Promise.race()就会包装其解决值或拒绝理由并返回新期约
 
+#### Promise学习笔记
+
+##### 什么是 Promise？
+
+Promise 是 JavaScript 中处理异步操作的一种方式。它是一种**表示异步操作最终完成或失败的对象**。使用 Promise 可以更方便地处理异步操作，**避免回调地狱**。
+
+##### Promise 的状态
+
+一个 Promise 可以有三种状态：
+
+- `pending`（进行中）：初始状态，异步操作正在进行中。
+- `fulfilled`（已完成）：异步操作成功完成。
+- `rejected`（已拒绝）：异步操作失败。
+
+Promise 对象从 pending 状态转变为 fulfilled 状态或 rejected 状态后，就称为 settled 状态。
+
+##### 创建 Promise
+
+我们可以使用 `new Promise()` 构造函数创建一个 Promise 对象。它接受一个执行器函数作为参数，这个执行器函数又接受两个参数 `resolve` 和 `reject`，用于将 Promise 的状态改变为 fulfilled 或 rejected。
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+  // 异步操作
+  // 当操作成功时，调用 resolve() 将 Promise 状态改为 fulfilled
+  // 当操作失败时，调用 reject() 将 Promise 状态改为 rejected
+});
+```
+
+##### 处理 Promise 结果
+
+我们可以使用 `then()` 方法来处理 Promise 的结果。`then()` 方法接受两个回调函数作为参数，第一个回调函数用于处理 Promise 成功时的结果，第二个回调函数用于处理 Promise 失败时的结果。
+
+```javascript
+promise.then(
+  result => {
+    // 处理成功时的结果
+  },
+  error => {
+    // 处理失败时的结果
+  }
+);
+```
+
+##### Promise 链式调用
+
+Promise 具有链式调用的特性，即可以在 `then()` 方法中返回一个新的 Promise 对象，从而形成一个 Promise 链。这样可以更好地处理依赖关系和串行执行的异步操作。
+
+```javascript
+promise
+  .then(result => {
+    // 处理第一个异步操作的结果
+    // 返回一个新的 Promise 对象
+    return new Promise((resolve, reject) => {
+      // 异步操作
+      // 当操作成功时，调用 resolve() 将 Promise 状态改为 fulfilled
+      // 当操作失败时，调用 reject() 将 Promise 状态改为 rejected
+    });
+  })
+  .then(result => {
+    // 处理第二个异步操作的结果
+  })
+  .catch(error => {
+    // 处理任意一个异步操作失败的情况
+  });
+```
+
+在 Promise 链中，每个 `then()` 方法可以返回一个新的 Promise 对象，从而将下一个异步操作与前一个操作关联起来。通过这种方式，可以很好地管理异步操作的顺序和依赖关系。
+
+##### Promise.resolve() 和 Promise.reject()
+
+`Promise.resolve()` 方法返回一个以给定值解析的 Promise 对象。如果传入的值是一个 Promise 对象，它将直接返回该 Promise 对象。
+
+```javascript
+Promise.resolve(value)
+  .then(result => {
+    // 处理成功时的结果
+  })
+  .catch(error => {
+    // 处理失败时的结果
+  });
+```
+
+`Promise.reject()` 方法返回一个带有拒绝原因的 Promise 对象。
+
+```javascript
+Promise.reject(reason)
+  .catch(error => {
+    // 处理失败时的结果
+  });
+```
+
+##### Promise 的错误处理
+
+使用 `catch()` 方法可以捕获 Promise 链中任意一个 Promise 失败的情况，并进行相应的错误处理。
+
+```javascript
+promise
+  .then(result => {
+    // 处理成功时的结果
+  })
+  .catch(error => {
+    // 处理任意一个 Promise 失败的情况
+  });
+```
+
+##### Promise 的最终处理
+
+使用 `finally()` 方法可以在 Promise 链的最后执行一段代码，无论 Promise 是成功还是失败。
+
+```javascript
+promise
+  .then(result => {
+    // 处理成功时的结果
+  })
+  .catch(error => {
+    // 处理失败时的结果
+  })
+  .finally(() => {
+    // 最终处理
+  });
+```
+
+在 `finally()` 方法中可以执行一些清理操作或者执行一些与 Promise 相关
+
+业务无关的收尾工作。
+##### Promise.all() 方法
+
+`Promise.all()` 方法接受一个 Promise 数组作为参数，返回一个新的 Promise 对象。这个新的 Promise 对象在数组中所有 Promise 都成功完成时才会被 resolved，否则它将被 rejected。
+
+```javascript
+const promises = [promise1, promise2, promise3];
+
+Promise.all(promises)
+  .then(results => {
+    // 所有 Promise 都成功完成时的结果
+  })
+  .catch(error => {
+    // 任意一个 Promise 失败时的结果
+  });
+```
+
+##### Promise.race() 方法
+
+`Promise.race()` 方法接受一个 Promise 数组作为参数，返回一个新的 Promise 对象。这个新的 Promise 对象在数组中任意一个 Promise 完成（成功或失败）时就会被 resolved 或 rejected。
+
+```javascript
+const promises = [promise1, promise2, promise3];
+
+Promise.race(promises)
+  .then(result => {
+    // 任意一个 Promise 完成时的结果
+  })
+  .catch(error => {
+    // 任意一个 Promise 完成时的错误
+  });
+```
+
 
 ### 事件循环
 
 JavaScript 是**单线程**的，包含了**同步任务**与**异步任务**，同步任务直接在**调用栈(主线程)**中执行，**异步任务**会放入**任务队列**(TaskQueue)中，等待同步任务全部执行完毕再取出来，所以如果异步之中仍有异步任务，在调用栈中执行时会继续放入任务队列中，这就是 JS 的事件循环机制(EventLoop)
 
-注意：事件的回调函数是异步任务，是在事件触发的时候才被添加到异步队列里的；定时器也是，时间到了才会放到队列里面
+> 注意：事件的回调函数是异步任务，是在事件触发的时候才被添加到异步队列里的；定时器也是，时间到了才会放到队列里面
 
 #### 宏任务与微任务
 
@@ -559,6 +789,7 @@ JavaScript 是**单线程**的，包含了**同步任务**与**异步任务**，
     - **定时器**任务（setTimeout、setInterval）：通过设定的时间间隔或延迟来触发执行。
     - I/O 操作（文件读写、网络请求等）：当 I/O 操作完成时，将触发宏任务执行。
     - UI 渲染：当浏览器需要重新绘制页面时，会触发宏任务。
+    - 事件的回调函数
 - **微任务**是指在当前宏任务执行结束后、下一个宏任务开始之前执行的任务。常见的微任务包括：
 
     - **Promise 回调**：当 Promise 状态改变为 resolved 或 rejected 时，相关的回调函数将作为微任务执行。
@@ -620,7 +851,7 @@ JavaScript 是**单线程**的，包含了**同步任务**与**异步任务**，
 
 
 
-- 使用闭包来创建一个函数作用域，并通过将变量 i 作为参数传递给立即执行函数来捕获每次迭代的值：
+- 使用闭包来创建一个函数作用域（也是创建局部作用域的思想），并通过将变量 i 作为参数传递给立即执行函数来捕获每次迭代的值：
 ```javascript
     for (var i = 0; i < 10; i++) {
         (function(i) {
@@ -768,7 +999,57 @@ const instance = new ClassName(arg1, arg2);
 - 尾调用：函数里嵌套函数，外层返回值也是内层函数的返回值
 - 优化：本来嵌套函数要入栈两个函数，优化后不需要了，入了，弹出（因为不用留着），再入，再弹出
 - 利用尾调用可以优化递归代码p309
-- 
+
+### 原始值和引用值
+- 原始值是简单的数据（保存在栈内存），引用值是由多个值构成的对象（保存在堆内存）
+- 原始值有六种`undefined`、`null`、`Boolean`、`String`、`Number`、`Symbol`
+- 保存原始值的变量，是按值访问的；保存引用值的变量，操作的是引用，不是对象本身。
+
+#### 原始值和引用值的复制
+- 原始值变量复制，复制出来的是副本，两个变量可以独立使用，互不干扰。
+- 引用值复制：复制的其实是指针，它指向堆内存中的对象，复制后两个变量其实指向的还是同一个对象
+  ```javascript
+    let obj1 = new Object();
+    let obj2 = obj1;
+  ```
+#### 传递参数
+- js中所有的函数参数都是**按值传递**的。外部的值会被复制到函数内部的参数中，就像一个变量复制到另一个变量一样。
+- 对于引用值的参数，复制的是指针，它们指向同一处内存区域，但不是同一个指针！如果在函数内部将指针重新赋值，则不影响原来的对象。
+  ```javascript
+    function setName(obj) {
+      obj.name = 'zss';
+      obj = new Object();
+      obj.name = 'ztg';
+    }
+
+    let person = new Object();
+    setName(person);
+    console.log(person.name); // 输出是zss而不是ztg！
+  ```
+#### 确定类型
+- typeof 运算符适合判断某个变量是否为某种原始类型。但它对引用值的用处不大。因为我们通常关心的不是它是不是对象，而是想知道它是什么类型的对象
+- instanceof 操作符用来判断是什么类型的对象
+  ```javascript
+    prson instanceof Object;
+    colors instanceof Array;
+  ```
+### 作用域
+- 分全局作用域、函数作用域、块级作用域
+- 代码执行每进入新的作用域，都会创建一个作用域链，用于搜索变量和函数
+- 函数或块级作用域，不仅可以访问自己，还能访问全局或包含自己的作用域
+- 全局只能访问全局，不能访问局部作用域
+- 变量的作用域用于确定什么时候释放内存
+
+### 垃圾回收机制
+- 开发者不需要操心内存分配和回收。但为促进垃圾回收，全局对象、全局变量应该在不需要的时候解除引用
+- js有回收程序：
+  - 离开作用域的值会被标记为可回收，然后在垃圾回收期间被删除
+  - 主流的垃圾回收算法是**标记清理**，即先给不使用的值加上标记，再回来回收它们的内存
+  - 引用计数
+    - 记录值被引用了多少次
+    - 已经基本淘汰
+    - 循环引用时存在问题
+  
 ```javascript
 
 ```

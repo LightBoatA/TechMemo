@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Router</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        button {
+            margin-right: 10px;
+        }
+        #content {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>History Router</h1>
+    <div id="nav">
+        <button onclick="navigateTo('home')">Home</button>
+        <button onclick="navigateTo('about')">About</button>
+        <button onclick="navigateTo('contact')">Contact</button>
+    </div>
+    <div id="content">
+        <!-- Content will be dynamically updated here -->
+    </div>
+
+    <script>
+        function navigateTo(path) {
+            fetchContent(path)
+                .then((html) => {
+                    // Update the content based on the response HTML
+                    const contentContainer = document.getElementById('content');
+                    contentContainer.innerHTML = html;
+
+                    // Use history API to navigate to the specified path
+                    console.log('填入历史记录：', path);
+                    // 填入历史记录、不触发刷新的情况下修改地址栏中的链接
+                    history.pushState({}, '', path);
+                })
+                .catch((error) => {
+                    console.error('请求错误信息：', error);
+                });
+        }
+
+        function fetchContent(path) {
+            return fetch(`http://localhost:3000/api/pages/${path}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('请求内容失败.');
+                    }
+                    return response.text();
+                })
+        }
+
+        // Listen for popstate event to handle browser back/forward button
+        window.addEventListener('popstate', () => {
+            const path = location.pathname.replace('/', '');
+            console.log('监听到了后退：', path);
+            navigateTo(path);
+        });
+
+        // Initial content based on the current path
+        const initialPath = location.pathname.replace('', '');
+        navigateTo(initialPath);
+    </script>
+</body>
+</html>

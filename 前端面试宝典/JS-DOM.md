@@ -89,3 +89,38 @@
 - `style.width`不包含`padding`和`border`
 - `style.width`获得的是带单位的字符串
 - `style`是可读写属性，`offset`系列是只读
+
+#### client系列
+- `element.clientTop`: 获取元素上边框的像素宽度
+- `element.clientLeft`: 获取元素左边框的像素宽度
+- `element.clientWidth`: 获取元素**内容区域的宽度**，不包括元素的内边距和边框宽度
+- `element.clientHeight`: 获取元素内容区域的高度，不包括元素的内边距和边框高度
+
+> 注意：
+> - `offset`系列属性获取的是元素在页面上的位置和尺寸，包括边框、内边距和滚动条占用的空间。
+> - `client`系列属性获取的是元素内容区域的位置和尺寸，不包括边框和滚动条占用的空间。
+>
+#### scroll系列
+- `element.scrollTop`: 获取元素内容区域顶部被隐藏的像素数，即向上滚动的距离（被卷去的头部）
+  - 扩展：如果是页面被卷去多少：`window.pageYOffset`
+- `element.scrollLeft`: 获取元素内容区域左侧被隐藏的像素数，即向左滚动的距离
+- `element.scrollWidth`: 获取元素内容区域的宽度，包含padding,不包括边框，包括**被隐藏**的部分（真正的内容的大小）
+- `element.scrollHeight`: 获取元素内容区域的高度，包括被隐藏的部分
+- `element.scrollTo(x, y)`: 滚动到指定的坐标位置，x为水平滚动位置，y为垂直滚动位置
+- `element.scrollIntoView()`: 滚动到元素可见区域内，如果参数为true，则元素顶部与视口顶部对齐，否则元素底部与视口底部对齐
+
+#### 三大系列的对比：
+`element.offsetWidth` 包含边框
+`element.clientWidth` 不包含边框
+`element.scrollWidth` 不包含边框、包含隐藏
+
+#### 三大系列主要用法：
+- offset系列经常用于获得元素位置 offsetLeft/offsetTop
+- client系列经常用于获取元素内容大小 clientWidth/clientHeight
+- scroll系列经常用于获取滚动出去的距离 scrollTop/scrollLeft
+- 注意：页面的滚动距离：window.pageXOffset
+
+### 事件
+### mouseover和mouseenter
+- mouseover有冒泡机制，给父盒子绑定，经过子盒子时候也会触发
+- mouseenter没有冒泡机制，只会自己触发，经过子不会触发

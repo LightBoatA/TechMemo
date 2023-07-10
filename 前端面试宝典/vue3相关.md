@@ -290,6 +290,183 @@ reactive() 的种种限制归根结底是因为 JavaScript 没有可以作用于
   }
   ```
 
+
+### 注册
+- 全局注册
+  ```js
+  import MyComponent from './App.vue'
+
+  app.component('MyComponent', MyComponent)
+  ```
+- 局部注册：先import导入组件
+  - 在使用 &lt;script setup&gt; 的单文件组件中，导入的组件可以直接在模板中使用，无需注册：
+  - 没有使用 &lt;script setup&gt;则需要使用 components 选项来显式注册：
+  ```js
+  export default {
+    components: {
+      ComponentA
+    },
+    setup() {
+      // ...
+    }
+  ```
+
+### Props
+- 除了使用字符串数组来声明 prop 外，还可以使用对象的形式：key 是 prop 的名称，而值则是该 prop 预期类型的**构造函数**。
+  ```js
+  defineProps({
+    titile: String,
+    likes: Number
+  })
+  ```
+  也可以进行更复杂的类型检查：每个属性是对象，可以设置其`type`/`default`/ `required`/`validator(value)`
+
+- 如果prop名字很长，推荐小驼峰形式
+- 当传递不同类型的值时，注意动态绑定的细节，如果是常量字符串，可以是静态绑定，如果是其他类型，即便是常量也需要动态绑定。因为它们是表达式，否则会被解析为字符串。
+ ```html
+  <!-- 仅写上 prop 但不传值，会隐式转换为 `true` -->
+  <BlogPost is-published />
+
+  <!-- 虽然 `false` 是静态的值，我们还是需要使用 v-bind -->
+  <!-- 因为这是一个 JavaScript 表达式而不是一个字符串 -->
+  <BlogPost :is-published="false" />
+
+  <!-- 根据一个变量的值动态传入 -->
+  <BlogPost :is-published="post.isPublished" />
+
+  ``` 
+- 可以使用对象绑定多个prop：v-bind=xxx
 ```js
+const post = {
+  id: 1,
+  title: 'My Journey with Vue'
+}
+
+<BlogPost v-bind="post" />
+// 等价于：
+<BlogPost :id="post.id" :title="post.title" />
+```
+- vue非常不建议子组件修改prop，如果想用其做初始值，那么可以另外定义一个变量；如果想进一步处理，可以通过计算属性；如果一定要更改，可以抛出自定义事件，通知父组件来更改
+
+### 事件
+
+- 事件校验：要为事件添加校验，那么事件可以被赋值为一个函数，接受的参数就是抛出事件时传入 emit 的内容，返回一个布尔值来表明事件是否合法。
+  ```js
+    <script setup>
+    const emit = defineEmits({
+      // 没有校验
+      click: null,
+
+      // 校验 submit 事件
+      submit: ({ email, password }) => {
+        if (email && password) {
+          return true
+        } else {
+          console.warn('Invalid submit event payload!')
+          return false
+        }
+      }
+    })
+
+    function submitForm(email, password) {
+      emit('submit', { email, password })
+    }
+    </script>
+  ```
+### 组件v-model
+- 当使用在一个组件上时，v-model 会被展开为如下的形式：
+  ```html
+    <CustomInput
+      :modelValue="searchText"
+      @update:modelValue="newValue => searchText = newValue"
+    />
+  ```
+  所以，组件内部要这样写：
+  ```html
+  <!-- CustomInput.vue -->
+    <script setup>
+    defineProps(['modelValue'])
+    defineEmits(['update:modelValue'])
+    </script>
+
+    <template>
+      <input
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+      />
+    </template>
+  ```
+  可以给modelValue改名：这样就改成title了，所有modelValue的地方改成title：
+  ```html
+    <MyComponent v-model:title="bookTitle" />
+  ```
+  
+  还可以通过计算属性:
+  ```html
+    <!-- CustomInput.vue -->
+    <script setup>
+    import { computed } from 'vue'
+
+    const props = defineProps(['modelValue'])
+    const emit = defineEmits(['update:modelValue'])
+
+    const value = computed({
+      get() {
+        return props.modelValue
+      },
+      set(value) {
+        emit('update:modelValue', value)
+      }
+    })
+    </script>
+
+    <template>
+      <input v-model="value" />
+    </template>
+  ```
+- 多个v-model绑定：借助v-model参数，即上面说的改名，可以在一个组件上创建多个v-model双向绑定：
+  ```html
+    <UserName
+      v-model:first-name="first"
+      v-model:last-name="last"
+    />
+  ```
+  ```js
+    <script setup>
+    defineProps({
+      firstName: String,
+      lastName: String
+    })
+
+    defineEmits(['update:firstName', 'update:lastName'])
+    </script>
+
+    <template>
+      <input
+        type="text"
+        :value="firstName"
+        @input="$emit('update:firstName', $event.target.value)"
+      />
+      <input
+        type="text"
+        :value="lastName"
+        @input="$emit('update:lastName', $event.target.value)"
+      />
+    </template>
+  ```
+- 能够处理v-model修饰符，但需要自定义编写，不复杂，具体看文档
+
+### 透传attributes
+- 指的是传递给一个组件，却没有被该组件声明为props或emits的属性，或者v-on事件监听器。最常见的例子就是`class`、`style`和`id`。
+- 当一个组件以单个元素为根作渲染时，透传的属性会被自动添加到根元素上。
+- 能够深层传递
+- 可以禁用此项功能
+- 多根节点的组件，表现不同，需格外设置
+
+```js
+
+```
+
+```html
 
 ```
