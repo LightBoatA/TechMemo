@@ -534,6 +534,62 @@ person1.sayName();
   instance2.sayAge();
 
 ```
+### 创建对象的一种方式：
+`Object.create()` 方法用于创建一个新对象，该对象的**原型链**指向**指定的原型对象**。它提供了一种**基于原型继承的方式来创建对象**。
+
+使用 `Object.create()` 方法可以实现以下功能：
+
+1. 创建对象：通过指定原型对象，可以创建一个新的对象，并继承原型对象的属性和方法。
+
+2. 原型继承：通过将一个对象作为原型传递给 `Object.create()` 方法，可以创建一个继承自该原型的新对象。这样，新对象可以共享原型对象的属性和方法。
+
+下面是使用 `Object.create()` 方法创建对象的示例：
+
+```javascript
+// 创建一个原型对象
+const personPrototype = {
+  greet() {
+    console.log('Hello!');
+  }
+};
+
+// 使用原型对象创建新对象
+const person = Object.create(personPrototype);
+
+// 调用继承的方法
+person.greet(); // 输出: Hello!
+```
+
+需要注意的是，通过 `Object.create()` 方法创建的新对象是没有自身属性的，它仅继承了原型对象的属性。如果需要给新对象添加自身属性，可以使用对象字面量或其他方式进行属性赋值。例如：
+```js
+const personPrototype = {
+  greet() {
+    console.log('Hello!');
+  }
+};
+
+const person = Object.create(personPrototype, {
+  name: {
+    value: 'John',
+    writable: true
+  },
+  age: {
+    value: 30,
+    writable: true
+  }
+});
+
+console.log(person.name); // 输出: John
+console.log(person.age); // 输出: 30
+
+person.name = 'Jane';
+person.age = 35;
+
+console.log(person.name); // 输出: Jane
+console.log(person.age); // 输出: 35
+
+```
+
 ### 类
 - 创建类和实现继承的典型例子：
   ```js

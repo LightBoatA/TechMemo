@@ -1,0 +1,11 @@
+{
+  "name": "my-packge",
+  "version": "1.0.0",
+  "description": "开发学习笔记",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
