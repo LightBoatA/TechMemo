@@ -1106,6 +1106,21 @@ const instance = new ClassName(arg1, arg2);
     - 已经基本淘汰
     - 循环引用时存在问题
   
+### indexOf和includes
+- 都是ES5方法
+- 区别：
+  - `indexOf` 返回元素的索引或 -1;`includes` 直接返回布尔值。
+  - `indexOf` 方法还可以指定起始搜索位置，而 `includes` 方法没有这个参数。
+- 如果只需要判断一个元素是否存在于数组中，可以使用 includes 方法，如果需要获取元素在数组中的索引位置，可以使用 indexOf 方法。
+### 函数柯里化
+实际工作中经常会复用函数参数，比如：
+`myFetch('https://', 'www.hahaha.com', '/作甚')`
+`myFetch('https://', 'www.hahaha.com', '/优冰')`
+`myFetch('https://', 'www.ttttttttttttttttttt.com', '/什么')`
+柯里化可以提高复用性
+
+### 错误处理
+- 8种错误类型
 ```javascript
 
 ```

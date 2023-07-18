@@ -1,10 +1,23 @@
-- 数组合并去重、数组去重，用set
-  ```javascript
-  // 数组合并
-  let newArr = Array.from(new Set([...arr1, ...arr2]))
-  // 数组去重
-  let newArr = Array.from(new Set(arr))
-  ```
+- 数组合并去重、数组去重
+  - 用set
+    ```javascript
+    // 数组合并
+    let newArr = Array.from(new Set([...arr1, ...arr2]))
+    // 数组去重
+    let newArr = Array.from(new Set(arr))
+    ```
+  - indexOf/includes
+    - 创建一个res[];
+    - 循环遍历，看res中是否存在，不存在则添加
+  - filter:
+    - `arr.indexOf(item) === index;`只取首次出现的元素
+
+- 数组扁平化
+  - `arr.flat(Infinity)`
+  - 利用正则`JSON.parse('[' + JSON.stringify(arr).replace(/\[|\]/g, '') + ']');`
+  - 使用reduce、concat递归
+  - concat递归
+  - 代码示例：`\AlgorithmLab\ArrayFlattening.js`
 - 对象搜索：写一个 函数，遍历一个对象数组（第一个参数）并返 回一个包含相匹配的属性-值对（第二个参数）的所有对象的数组。<br/>
     例如，如果第一个参数是 
 
@@ -236,7 +249,11 @@ console.log(result);
 
 sym([1, 2, 3], [5, 2, 1, 4]);
   ```
-
+### 将类数组转换为数组：
+- `let args = Array.from(arguments)`
+- `let args = Array.prototype.slice.call(arguments)`
+- `let args = Array.prototype.concat.apply([],arguments)`
+- `let args = [...arguments]`
 
   ```javascript
     
