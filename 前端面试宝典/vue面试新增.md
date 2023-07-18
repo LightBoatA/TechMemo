@@ -264,7 +264,23 @@ vue3中有三种effect（渲染effect、计算属性effect、用户effect）
 # v-if和v-for哪个优先级更高
 
 # 生命周期有哪些？
-
+**vue2**
+- `beforeCreated`:数据没有被观测、在开发第三方插件时候可能会用到
+- `created`: 实例创建完了，数据被观测过了，但还没有el属性
+- `beforeMount`: 
+- `mounted`: 挂载完，能拿到实际的元素
+- `beforeUpdate`:
+- `update`:组件更新完毕
+- `beforeDestory`:实例还存在
+- `destroyed`:实例不存在了
+**vue3**
+- 在最前面添加了`setup`，是组合api的入口
+- 改名，` destory`改为`unmount`
+- 组合式API里用钩子：
+  - 前面都加个`on`
+  - 没有`onBeforeCreate`和`onCreated`，因为setup取代了这两个
+**什么时候发送请求**
+- 更多在mounted中，也可以在created中，因为请求是异步的，其实在这两个哪里都行
 # keep-alive
 内置组件
 
@@ -292,9 +308,20 @@ vue3中有三种effect（渲染effect、计算属性effect、用户effect）
 - vue2新增属性和删除属性时无法监控变化，需要通过$set、\$delete实现
 - vue2的数组不采用xx进行数据劫持：一方面是对所有索引进行劫持会浪费性能，另一方面是很少通过索引去操作数组。所以它选择重写对数组的7的操作方法。但长度变化监测不到，需要$set
 - vue3采用proxy的方式，代理对象或数组，避免了以上的问题
-**其他方面**
-- vue3更注重模块的拆分，在2.0中无法单独使用部分模块，需要引入完整的vue.js（例如只想使用响应式部分，但需要引入完整的vue.js），vue3中的模块之间耦合度低，模块可以独立使用
-
+**模块化**
+- vue3更注重模块的拆分，在2.0中无法单独使用部分模块，需要引入完整的vue.js（例如只想使用响应式部分，但需要引入完整的vue.js），new出来的实例对象，所有东西都在这个vue对象上，无论用不用到。vue3中的模块之间耦合度低，模块可以独立使用。减少了内存消耗，减少了用户加载时间。
+**获取props**
+- vue2:直接this.xxx
+- vue3:setup(prps,context) {console.log(props)}
+**API模式**
+- vue2选项型API
+  - 代码碎片化，处理同一个逻辑的代码被分散到各处，需要不断跳转到相关代码的区块，不易开发和维护
+- vue3合成型API
+  - 可以把相同逻辑点的代码放在一块
+  - 可以把每个逻辑分成独立的模块，最后再在带有模板的vue中调用
+**新增watchEffect**
+**生命周期**
+- 创建是setup
 # Vue.use是干什么的
 
 # Vue.extend
