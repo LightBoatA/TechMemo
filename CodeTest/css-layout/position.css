@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+}
+.container {
+    position: relative;
+    border: 2px solid #6ac5ac;
+}
+section {
+    margin-left: 150px;
+    padding: 1em;
+    border: 2px solid #fdc72f;
+}
+nav {
+    position: absolute;
+    width: 150px;
+    color: #d64078;
+    border: 2px solid #d64078;
+    top: 0;
+    left: 0;
+}
+/*媒体查询*/
+@media (max-width:599px) {
+    nav li {
+      display: inline;
+    }
+  }
+.info {
+    width: 50%;
+    text-align: center;
+    padding: 1em;
+    margin: 0 auto;
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    border: 2px solid #6ac5ac;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    /* line-height: 80px; */
+}

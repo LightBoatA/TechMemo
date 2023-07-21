@@ -2,10 +2,10 @@
 TypeScript是用于应用程序规模开发的JavaScript。
 
 TypeScript是强类型，面向对象的编译语言。TypeScript是JavaScript的一个超集。换句话说，TypeScript是JavaScript加上一些额外的功能。
-![Alt text](image-9.png)
+![Alt text](images/image-9.png)
 TypeScript 扩展了 JavaScript 的语法，所以任何现有的 JavaScript 程序可以不加改变的在 TypeScript 下工作。TypeScript 是为大型应用之开发而设计，而编译时它产生 JavaScript 以确保兼容性。
 TypeScript 可以编译出纯净、 简洁的 JavaScript 代码，并且可以运行在任何浏览器上、Node.js 环境中和任何支持 ECMAScript 3（或更高版本）的 JavaScript 引擎中。
-![Alt text](image-10.png)
+![Alt text](images/image-10.png)
 
 
 以下是您提供的HTML文档的Markdown格式转换：

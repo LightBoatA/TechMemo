@@ -282,7 +282,7 @@ for (const [index, value] of iterator) {
 ```
 执行效果如下：看了就懂了，连续点击，只有最后一次起作用
 
-![Alt text](image-5.png)
+![Alt text](images/image-5.png)
 **进阶版**：处理首次点击延迟问题<br/>
 与基础版不同的是：连续点击只有**首次**点击生效
 
@@ -308,7 +308,7 @@ function debounce(fn, delay) {
 ```
 看执行结果就懂了（或许）
 
-![Alt text](image-6.png)
+![Alt text](images/image-6.png)
 ### 节流
 - 与防抖不同的是，防抖的计时开始于被点击的时候。节流的计时是不受影响的固定的时间间隔
 - 它不需要定时器，但需要一个开始时间的标志
@@ -461,7 +461,7 @@ person1.sayName();
   - 共享特性：包含引用值的属性
 
 ### 原型链     
-![Alt text](image-8.png)
+![Alt text](images/image-8.png)
 原型和实例的关系可以通过两种方式来确定
 - `instanceof`操作符
   - `obj instanceof Object;` // true
@@ -1118,9 +1118,123 @@ const instance = new ClassName(arg1, arg2);
 `myFetch('https://', 'www.hahaha.com', '/优冰')`
 `myFetch('https://', 'www.ttttttttttttttttttt.com', '/什么')`
 柯里化可以提高复用性
+一个实际例子：bind函数的实现中涉及到
+```js
+Function.prototype.bind = function(context, ...args) {
+    if (typeof this !== 'function') {
+      throw new Error("Type Error");
+    }
 
+    // 把当前函数保存起来
+    const originFunc = this;
+
+    return function Func() {
+        //当一个函数通过 new 关键字来调用时，会创建一个新的对象，并将该对象绑定到函数的 this 上。
+        //此时，函数内部的 this 就指向这个新创建的对象。
+        // 因此，这个判断可以用来确定当前函数 F 是否被用作构造函数调用。
+        if (this instanceof Func) {
+            return new originFunc(...args, ...arguments);
+        }
+
+        return originFunc.apply(context, [...args,...arguments]);
+    }
+}
+```
+调用：
+```js
+function add(a, b, c) {
+    return a + b + c;
+  }
+  
+const boundAdd = add.bind(null, 1, 2);
+
+console.log(boundAdd(3)); // 输出：6
+```
+在 Function.prototype.bind 中，我们将函数的部分参数（通过 ...args）固定，并返回一个新的函数，这个新函数接受剩余的参数（通过 ...arguments），并调用原始函数。这样就实现了函数柯里化的效果。
+
+函数柯里化的优点在于可以方便地复用函数，并通过将部分参数固定，来创建更专注于特定用途的函数。这种技术在函数式编程中非常常见，并有助于提高代码的可读性和可维护性。
 ### 错误处理
 - 8种错误类型
+
+### 数组深拷贝和浅拷贝各自有哪些方法
+
+**浅拷贝**：
+1. 直接赋值
+2. `Array.prototype.slice()`: 使用 `slice()` 方法可以从原数组中创建一个新的浅拷贝数组。
+3. `Array.prototype.concat()`: 使用 `concat()` 方法可以将多个数组合并成一个新的浅拷贝数组。
+4. 扩展运算符 `...`：使用扩展运算符可以将一个数组中的所有元素放入另一个数组中，从而实现浅拷贝。
+
+```javascript
+const originalArray = [1, 2, 3];
+const shallowCopy0 = originalArray;
+const shallowCopy1 = originalArray.slice();
+const shallowCopy2 = [].concat(originalArray);
+const shallowCopy3 = [...originalArray];
+```
+
+**深拷贝**：
+1. 递归复制：通过递归遍历数组中的每个元素，然后复制每个元素的内容，实现深拷贝。
+
+```javascript
+function deepCopy(arr) {
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      result.push(deepCopy(arr[i]));
+    } else {
+      result.push(arr[i]);
+    }
+  }
+  return result;
+}
+
+const originalArray = [1, [2, 3], [4, [5, 6]]];
+const deepCopyArray = deepCopy(originalArray);
+```
+
+2. JSON序列化和反序列化：使用 `JSON.stringify()` 将数组转换为字符串，再用 `JSON.parse()` 将字符串转换为新的数组，实现深拷贝。但是这种方法有限制，无法复制一些特殊类型的数据（例如：函数、`undefined` 等）。
+
+```javascript
+const originalArray = [1, [2, 3], [4, [5, 6]]];
+const deepCopyArray = JSON.parse(JSON.stringify(originalArray));
+```
+
+### 数组遍历中，for...of和for...in的区别
+在数组遍历中，`for...of` 和 `for...in` 是两种不同的遍历方式，它们的区别如下：
+
+1. `for...of` 循环遍历数组的值：`for...of` 循环用于迭代数组中的元素，提供了一种简洁的语法来遍历数组中的值。它遍历的是数组的元素值，而不是索引或属性。
+
+```javascript
+const array = [1, 2, 3];
+
+for (const value of array) {
+  console.log(value);
+}
+// 输出：
+// 1
+// 2
+// 3
+```
+
+2. `for...in` 循环遍历数组的索引或属性：`for...in` 循环用于迭代数组的索引或属性。它遍历的是数组的索引或属性名，而不是元素值。因此，在遍历数组时，可能会得到一些非预期的结果，例如遍历到原型链上的属性。
+
+```javascript
+const array = [1, 2, 3];
+
+for (const index in array) {
+  console.log(index);
+}
+// 输出：
+// 0
+// 1
+// 2
+```
+
+需要注意的是，`for...in` 循环并不保证按照数组的顺序遍历元素，而且会遍历所有可枚举的属性，包括数组原型链上的属性。因此，在遍历数组时，通常更适合使用 `for...of` 循环来遍历数组的值。
+
+### js中有哪些数据类型
+
+
 ```javascript
 
 ```
