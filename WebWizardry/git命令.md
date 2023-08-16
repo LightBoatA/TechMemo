@@ -21,7 +21,7 @@
 
 
 - 新建并切换分支：`git checkout -b feature2`
-- 查看分支：`git branch --list`
+- 查看当前分支：`git branch --list`
 - 切换分支：`git checkout feature`
 - 合并分支，把别的分支合并到当前分支上来：`git merge feature1`
 
