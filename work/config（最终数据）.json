@@ -1,0 +1,150 @@
+{
+    "ownershipCompony": "南通",
+    "regionalVoltageLevel": "交流220kV",
+    "factoryType": "变电站",
+    "factoryName": "东洲变",
+    "drawingImageType": "区域图",
+    "drawingImageArea": "500kV",
+    "circuit": {}, // 接线图数据 包含红框图的信息
+    "powerOutageRangeOptions": [
+        { // 停电范围
+            "name": "220kV正母线",
+            "isCombination": false, // 是否组合
+            "devicesSetting": {
+                "closeUpSwitches": [
+                    {
+                        "name": "2X492刀闸",
+                        "status": "open" // close 关闭  open 打开
+                    }
+                ],
+                "isNonPowerDevices": [
+                    "新安线"
+                ]
+            }
+        },
+        {
+            "name": "220kV正母线-220kV副母线",
+            "isCombination": true,
+            "r": {
+                "closeUpSwitches": [
+                    {
+                        "name": "2X492刀闸",
+                        "status": "open" // close 关闭  open 打开
+                    }
+                ],
+                "isNonPowerDevices": [
+                    "新安线"
+                ]
+            }
+        }
+    ],
+    "batteryRangeOptions": [
+        { // 保电设置
+            "name": "220kV正母线",
+            "includesDevice": [
+                "1号主变"
+            ]
+        }
+    ],
+    "workPoints": [
+        { // 作业对象
+            "id": "500kVⅠ段母线间隔",
+            "name": "500kVⅠ段母线",
+            "children": [
+                {
+                    "id": "500kVⅠ段母线",
+                    "name": "500kVⅠ段母线",
+                    "children": []
+                },
+                {
+                    "id": "5127接地刀闸",
+                    "name": "5127接地刀闸",
+                    "children": []
+                },
+                {
+                    "id": "5157接地刀闸",
+                    "name": "5157接地刀闸",
+                    "children": []
+                },
+                {
+                    "id": "500kVⅠ段母线避雷器",
+                    "name": "500kVⅠ段母线避雷器",
+                    "children": []
+                },
+                {
+                    "id": "500kVⅠ段母线压变",
+                    "name": "500kVⅠ段母线压变",
+                    "children": []
+                }
+            ]
+        }
+    ],
+    "batteryPowerRelation": { // 关系
+        "elimination": { // 排斥
+            "batteryPowers": [ // 保电
+                {
+                    "name": "220kv母线",
+                    "eliminations": [
+                        {
+                            "name": "220kV正母线",
+                            "type": "powerOutage" // 类型
+                        }
+                    ]
+                }
+            ],
+            "powerOutages": [ // 停电
+                {
+                    "name": "220kv母线",
+                    "eliminations": [
+                        {
+                            "name": "220kV正母线",
+                            "type": "batteryPower"
+                        },
+                        {
+                            "name": "220kV正母压变",
+                            "type": "powerOutage"
+                        },
+                        {
+                            "name": "220kV母联",
+                            "type": "powerOutage" 
+                        },
+                    ]
+                },
+                {
+                    "name": "220kV正母压变",
+                    "eliminations": [
+                        {
+                            "name": "220kV正母线",
+                            "type": "batteryPower"
+                        },
+                        {
+                            "name": "220kV正母压变",
+                            "type": "powerOutage"
+                        },
+                        {
+                            "name": "220kV母联 ",
+                            "type": "powerOutage"
+                        },
+                    ]
+                }
+            ]
+        }
+    },
+    "initSwitchAndElectric": {
+        "closeUpSwitches": [
+            {
+                "name": "2X492刀闸",
+                "status": "open" // close 关闭  open 打开
+            }
+        ],
+        "isNonPowerDevices": [
+            "新安线"
+        ]
+    },
+    "compassData": {
+        "direction": "",
+        "position": {}, // 上下左右四个位置
+    },
+    "deviceBg": "",
+    "roadBg": ""
+}
