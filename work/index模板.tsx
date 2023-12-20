@@ -4,7 +4,7 @@ interface IProps {
 
 }
 export const 组件名: React.FC<IProps> = props => {
-  const {} = props;
+  // const {} = props;
   return useMemo(() => {
     return (
       <div className="组件类名">
